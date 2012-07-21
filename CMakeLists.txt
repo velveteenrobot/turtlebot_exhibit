@@ -29,7 +29,7 @@ rosbuild_genmsg()
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
 
-rosbuild_add_library(turtlebot_follower src/follower.cpp)
+rosbuild_add_library(turtlebot_exhibit src/exhibit.cpp)
 
 #add dynamic reconfigure api                                                                                    
 rosbuild_find_ros_package(dynamic_reconfigure)

@@ -1,5 +1,5 @@
-<library path="lib/libturtlebot_follower">
- <class name="turtlebot_follower/TurtlebotFollower" type="turtlebot_follower::TurtlebotFollower" base_class_type="nodelet::Nodelet">
+<library path="lib/libturtlebot_exhibit">
+ <class name="turtlebot_exhibit/Exhibit" type="turtlebot_exhibit::TurtlebotExhibit" base_class_type="nodelet::Nodelet">
  <description>
  The turtlebot people follower node.
  </description>

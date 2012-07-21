@@ -1,12 +1,12 @@
 <package>
-  <description brief="follower">
+  <description brief="exhibit">
 
      Follower for the turtlebot. Follows humans and robots around
      by following the centroid of a box points infront of the
      turtlebot.
 
   </description>
-  <author>Tony Pratkanis</author>
+  <author>Sarah Elliott</author>
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/follower</url>
