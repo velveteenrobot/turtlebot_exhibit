@@ -38,7 +38,7 @@
 #include <turtlebot_exhibit/Relationship.h>
 #include <iostream>
 
-enum { SPIN_CW = 1, SPIN_CCW = 2, FORWARD = 3, BACKWARD = 4, COW = 5}; 
+enum { SPIN_CW = 1, SPIN_CCW = 2, FORWARD = 3, BACKWARD = 4, COW = 5, SPEAK = 6}; 
 
 namespace turtlebot_exhibit
 {
@@ -126,10 +126,11 @@ private:
     */
    stim_prox2_ = msg->prox2;
    stim_prox4_ = msg->prox4;
-    
+   react_speak_text2_ = msg->speak_text2;
+   react_speak_text4_ = msg->speak_text4;
   }
 
-  void react(int reaction, double z) 
+  void react(int reaction, double z, std::string speak_text) 
   {
     ROS_INFO("%i", reaction);
     geometry_msgs::Twist cmd;
@@ -153,6 +154,9 @@ private:
         break;
       case COW:
         system("/opt/ros/electric/stacks/turtlebot_apps/turtlebot_exhibit/src/chirp.bash");
+        break;
+      case SPEAK:
+        system(("echo " + speak_text + " | festival --tts").c_str());
         break;
       default:
         cmd.linear.x = 0;
@@ -230,14 +234,15 @@ private:
       
       ROS_DEBUG("Centriod at %f %f %f with %d points", x_2, y_2, z_2, n);
       
-      BOOST_FOREACH (const int reaction, stim_prox2_)
-      {
-        ROS_INFO("%i", reaction);
-	react(reaction, z_2);
-	ros::Duration(0.5).sleep();
-	
-      }
-
+      if(stim_prox2_.size() != react_speak_text2_.size())
+        ROS_INFO("Malformed message. The lengths of the stimuli and the speak text aren't the same");
+      else
+        for(int i = 0; i < stim_prox2_.size(); i++)
+        {
+          ROS_INFO("%i", stim_prox2_[i]);
+          react(stim_prox2_[i], z_2, react_speak_text2_[i]);
+          ros::Duration(0.5).sleep();
+        }
 
 //      geometry_msgs::Twist cmd;
 //      cmd.linear.x = (z - goal_z_) * z_scale_;
@@ -255,13 +260,15 @@ private:
       y_4 /= m;
       z_4 /= m;
 
-      BOOST_FOREACH (const int reaction, stim_prox4_)
-      {
-        ROS_INFO("%i", reaction);
-	react(reaction, z_4);
-	ros::Duration(0.5).sleep();
-	
-      }
+      if(stim_prox4_.size() != react_speak_text4_.size())
+        ROS_INFO("Malformed message. The lengths of the stimuli and the speak text aren't the same");
+      else
+        for(int i = 0; i < stim_prox4_.size(); i++)
+        {
+          ROS_INFO("%i", stim_prox4_[i]);
+          react(stim_prox4_[i], z_4, react_speak_text4_[i]);
+          ros::Duration(0.5).sleep();
+        }
     }    
     else
     {
@@ -276,6 +283,8 @@ private:
   ros::Publisher cmdpub_;
   std::vector<int> stim_prox2_; 
   std::vector<int> stim_prox4_;
+  std::vector<std::string> react_speak_text2_;
+  std::vector<std::string> react_speak_text4_;
 };
 
 PLUGINLIB_DECLARE_CLASS(turtlebot_exhibit, TurtlebotExhibit, turtlebot_exhibit::TurtlebotExhibit, nodelet::Nodelet);
